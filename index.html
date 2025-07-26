@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Borel Sigma | Booking Dashboard</title>
+    <title>Zi-US Research | Booking Dashboard</title>
+    <meta name="description" content="Schedule research collaborations and meetings with our team">
     
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500&display=swap');
@@ -12,11 +13,20 @@
             --primary: #000000;
             --secondary: #1a1a1a;
             --accent: #0066ff;
+            --danger: #ff3366;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --purple: #8b5cf6;
+            --pink: #ec4899;
             --gray-100: #f8f9fa;
             --gray-200: #e9ecef;
             --gray-300: #dee2e6;
+            --gray-400: #ced4da;
+            --gray-500: #adb5bd;
             --gray-600: #6c757d;
             --gray-700: #495057;
+            --gray-800: #343a40;
+            --gray-900: #212529;
         }
 
         * {
@@ -26,37 +36,138 @@
         }
 
         html {
+            scroll-behavior: smooth;
             font-size: 62.5%;
         }
 
         body {
             font-family: 'Calibri Light', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
             font-weight: 300;
-            font-size: 1.4rem;
+            font-size: 1.2rem;
             line-height: 1.6;
             color: var(--primary);
-            background: var(--gray-100);
+            background: #ffffff;
+            overflow-x: hidden;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--gray-200);
+            z-index: 1000;
+            padding: 1.2rem 0;
+        }
+
+        .nav-container {
             display: flex;
             align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 2rem;
+            justify-content: space-between;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 4rem;
+        }
+
+        .brand-name {
+            font-size: 1.4rem;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 3rem;
+        }
+
+        .nav-menu a {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 1.1rem;
+            position: relative;
+            transition: opacity 0.2s ease;
+        }
+
+        .nav-menu a:hover {
+            opacity: 0.6;
+        }
+
+        .nav-menu a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -0.5rem;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: var(--primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            margin-top: 5rem;
+            padding: 6rem 0 4rem;
+            background: linear-gradient(135deg, var(--gray-100) 0%, white 100%);
+            border-bottom: 1px solid var(--gray-200);
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3.6rem;
+            font-weight: 200;
+            line-height: 1.2;
+            margin-bottom: 1.6rem;
+            letter-spacing: -0.02em;
+        }
+
+        .hero p {
+            font-size: 1.4rem;
+            color: var(--gray-600);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Main Container */
+        .booking-section {
+            padding: 6rem 0;
         }
 
         .main-container {
             width: 100%;
             max-width: 700px;
+            margin: 0 auto;
             background: #ffffff;
             border: 1px solid var(--gray-200);
             border-radius: 0.4rem;
             padding: 4rem;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.05);
         }
 
-        h1 {
-            font-size: 3.2rem;
+        h2 {
+            font-size: 2.4rem;
             font-weight: 200;
             margin-bottom: 3rem;
             text-align: center;
@@ -85,16 +196,22 @@
             width: 100%;
             padding: 1rem;
             font-size: 1.3rem;
-            font-family: 'Inter', sans-serif;
+            font-family: 'Calibri Light', 'Inter', sans-serif;
+            font-weight: 300;
             border: 1px solid var(--gray-300);
             border-radius: 0.2rem;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            background: white;
         }
 
         .form-input:focus {
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.15);
+        }
+
+        select.form-input {
+            cursor: pointer;
         }
 
         textarea.form-input {
@@ -108,10 +225,11 @@
             margin-bottom: 3rem;
         }
 
-        .consent-group input {
-            margin-top: 0.5rem;
+        .consent-group input[type="checkbox"] {
+            margin-top: 0.3rem;
             height: 1.6rem;
             width: 1.6rem;
+            cursor: pointer;
         }
 
         .consent-group label {
@@ -119,12 +237,14 @@
             color: var(--gray-600);
             margin-left: 1rem;
             font-weight: 300;
+            cursor: pointer;
         }
 
         .button-container {
             text-align: center;
         }
 
+        /* Buttons */
         .btn {
             padding: 1.2rem 3rem;
             font-size: 1.3rem;
@@ -150,6 +270,22 @@
             border-color: var(--secondary);
         }
 
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Thank You Container */
         #thank-you-container {
             text-align: center;
         }
@@ -158,10 +294,10 @@
             margin: 0 auto;
             height: 6rem;
             width: 6rem;
-            color: #10b981;
+            color: var(--success);
         }
 
-        #thank-you-container h1 {
+        #thank-you-container h2 {
             margin-top: 2rem;
         }
 
@@ -169,123 +305,222 @@
             font-size: 1.3rem;
             color: var(--gray-600);
             margin-bottom: 3rem;
+            line-height: 1.8;
         }
         
         .hidden {
             display: none;
         }
 
+        /* Error Message */
+        .error-message {
+            background: #fee;
+            border: 1px solid #fcc;
+            color: var(--danger);
+            padding: 1rem;
+            border-radius: 0.2rem;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        /* Loader */
         #loader-overlay {
             position: fixed;
             inset: 0;
-            background: rgba(255, 255, 255, 0.8);
-            z-index: 1000;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
             display: flex;
             align-items: center;
             justify-content: center;
+            flex-direction: column;
+            gap: 2rem;
         }
+
         #loader {
-            border: 5px solid var(--gray-200);
-            border-top: 5px solid var(--accent);
+            border: 3px solid var(--gray-200);
+            border-top: 3px solid var(--accent);
             border-radius: 50%;
             width: 50px;
             height: 50px;
             animation: spin 1s linear infinite;
         }
+
+        .loader-text {
+            font-size: 1.4rem;
+            color: var(--gray-600);
+        }
+
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
 
+        /* Footer */
+        footer {
+            padding: 4rem 0 2rem;
+            border-top: 1px solid var(--gray-200);
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            text-align: center;
+        }
+
+        .footer-text {
+            font-size: 1.1rem;
+            color: var(--gray-600);
+        }
+
+        /* Responsive */
         @media (max-width: 768px) {
-            body {
-                padding: 1rem;
+            .hero h1 {
+                font-size: 2.8rem;
             }
+
+            .nav-menu {
+                display: none;
+            }
+
             .main-container {
                 padding: 2rem;
             }
+
             .form-grid {
                 grid-template-columns: 1fr;
                 gap: 0;
+            }
+
+            h2 {
+                font-size: 2rem;
             }
         }
     </style>
 </head>
 <body>
-
-    <div id="booking-container" class="main-container">
-        <h1>Create a New Booking</h1>
-        
-        <form id="booking-form">
-            <div class="form-grid">
-                <div class="form-group">
-                    <label for="user-name">Participant Name</label>
-                    <input type="text" id="user-name" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="company-name">Company Name</label>
-                    <input type="text" id="company-name" class="form-input" required>
-                </div>
-                 <div class="form-group">
-                    <label for="event-date">Date</label>
-                    <input type="date" id="event-date" class="form-input" required>
-                </div>
-                <div class="form-group">
-                    <label for="event-time">Time (Greenwich Mean Time)</label>
-                    <input type="time" id="event-time" class="form-input" required>
-                </div>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="nav-left">
+                <span class="brand-name">Zi-US Research</span>
+                <ul class="nav-menu">
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Research</a></li>
+                    <li><a href="#" class="active">Booking</a></li>
+                    <li><a href="#">Publications</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
             </div>
-
-            <div class="form-group">
-                <label for="meeting-type">Meeting Type</label>
-                <select id="meeting-type" class="form-input">
-                    <option value="none" selected>Select a meeting type...</option>
-                    <option value="google-meet">Google Meet</option>
-                    <option value="webex">Webex</option>
-                    <option value="zoom">Zoom</option>
-                    <option value="teams">Microsoft Teams</option>
-                </select>
+            <div class="nav-actions">
+                <a href="#" class="btn btn-outline" style="padding: 0.8rem 2rem; font-size: 1.1rem; width: auto;">Back to Research</a>
             </div>
-
-            <div class="form-group">
-                <label for="primary-guest-email">Participant Email</label>
-                <input type="email" id="primary-guest-email" class="form-input" placeholder="Participant's email address">
-            </div>
-
-            <div class="form-group">
-                <label for="additional-emails">Additional Guests (comma separated)</label>
-                <textarea id="additional-emails" class="form-input" placeholder="guest2@example.com, guest3@example.com"></textarea>
-            </div>
-
-            <div class="consent-group">
-                <input type="checkbox" id="consent-checkbox" required>
-                <label for="consent-checkbox">I allow Borel Sigma to arrange meet ups on our behalf and store our emails for quality and preferences.</label>
-            </div>
-
-            <div class="button-container">
-                <button type="submit" class="btn">Save Event & Send Invites</button>
-            </div>
-        </form>
-    </div>
-
-    <div id="thank-you-container" class="main-container hidden">
-        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-        </svg>
-        <h1>Thank You!</h1>
-        <p>Your booking has been confirmed. All guests have been notified via email.</p>
-        <div class="button-container">
-            <button id="book-another" class="btn">Book Another Meeting</button>
         </div>
-    </div>
+    </nav>
 
-    <div id="loader-overlay" class="hidden">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Schedule a Research Collaboration</h1>
+            <p>Book a meeting with our research team to discuss potential collaborations, project opportunities, or scientific inquiries</p>
+        </div>
+    </section>
+
+    <!-- Booking Section -->
+    <section class="booking-section">
+        <div id="booking-container" class="main-container">
+            <h2>Create a New Booking</h2>
+            
+            <div id="error-container"></div>
+            
+            <form id="booking-form">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="user-name">Participant Name</label>
+                        <input type="text" id="user-name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="company-name">Institution/Company</label>
+                        <input type="text" id="company-name" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="event-date">Date</label>
+                        <input type="date" id="event-date" class="form-input" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="event-time">Time (GMT)</label>
+                        <input type="time" id="event-time" class="form-input" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="meeting-type">Meeting Platform</label>
+                    <select id="meeting-type" class="form-input" required>
+                        <option value="" selected>Select a meeting platform...</option>
+                        <option value="google-meet">Google Meet</option>
+                        <option value="webex">Webex</option>
+                        <option value="zoom">Zoom</option>
+                        <option value="teams">Microsoft Teams</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="primary-guest-email">Participant Email</label>
+                    <input type="email" id="primary-guest-email" class="form-input" placeholder="participant@example.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="additional-emails">Additional Participants (comma separated)</label>
+                    <textarea id="additional-emails" class="form-input" placeholder="colleague1@example.com, colleague2@example.com"></textarea>
+                </div>
+
+                <div class="consent-group">
+                    <input type="checkbox" id="consent-checkbox" required>
+                    <label for="consent-checkbox">I allow Zi-US Research to arrange meetings on our behalf and store contact information for scheduling and quality purposes.</label>
+                </div>
+
+                <div class="button-container">
+                    <button type="submit" class="btn" id="submit-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 6L9 17l-5-5"/>
+                        </svg>
+                        Save Event & Send Invites
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div id="thank-you-container" class="main-container hidden">
+            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            <h2>Booking Confirmed!</h2>
+            <p>Your meeting has been successfully scheduled. All participants will receive calendar invitations via email shortly.</p>
+            <div class="button-container">
+                <button id="book-another" class="btn">Schedule Another Meeting</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <p class="footer-text">© 2025 Zi-US Research. All rights reserved. | Research Collaboration Platform</p>
+        </div>
+    </footer>
+
+    <!-- Loader Overlay -->
+    <div id="loader-overlay" class="hidden" style="display: none;">
         <div id="loader"></div>
+        <p class="loader-text">Processing your booking...</p>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzJpSfz6OzB24tMJvSfzdGxpMpTyjT-8qztrHuO2jOZi3TQvaMfG8M6HPYAAbnSTRSh/exec';
+            // Configuration
+            const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzZj7BbtMxYQRfnf6x9P4VWNkDXnbiuWYztoB2NKu9wgK6ioMV3Y2UJmSJB_qPXJ2HprA/exec';
             const MEETING_DATA = {
                 'google-meet': { link: 'https://meet.google.com/dga-frbk-xob', passcode: 'N/A' },
                 'webex': { link: 'https://meet1427.webex.com/meet/pr23614102288', passcode: '23614102288' },
@@ -293,19 +528,35 @@
                 'teams': { link: 'https://teams.microsoft.com/l/meetup-join/...', passcode: 'N/A' }
             };
 
+            // Elements
             const bookingContainer = document.getElementById('booking-container');
             const thankYouContainer = document.getElementById('thank-you-container');
             const bookingForm = document.getElementById('booking-form');
             const meetingTypeSelect = document.getElementById('meeting-type');
             const loaderOverlay = document.getElementById('loader-overlay');
             const bookAnotherBtn = document.getElementById('book-another');
+            const submitBtn = document.getElementById('submit-btn');
+            const errorContainer = document.getElementById('error-container');
 
             let meetingLink = '';
             let meetingPasscode = '';
 
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('event-date').setAttribute('min', today);
+
+            // Show error message
+            function showError(message) {
+                errorContainer.innerHTML = `<div class="error-message">${message}</div>`;
+                setTimeout(() => {
+                    errorContainer.innerHTML = '';
+                }, 5000);
+            }
+
+            // Meeting type change handler
             meetingTypeSelect.addEventListener('change', (e) => {
                 const type = e.target.value;
-                if (type !== 'none') {
+                if (type && type !== '') {
                     const data = MEETING_DATA[type];
                     meetingLink = data.link;
                     meetingPasscode = data.passcode;
@@ -315,78 +566,103 @@
                 }
             });
 
+            // Form submission handler
             bookingForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
-                loaderOverlay.classList.remove('hidden');
+                
+                if (!meetingTypeSelect.value || meetingTypeSelect.value === '') {
+                    showError('Please select a meeting platform');
+                    return;
+                }
+
+                loaderOverlay.style.display = 'flex'; // Show loader
+                submitBtn.disabled = true;
 
                 const primaryEmail = document.getElementById('primary-guest-email').value.trim();
                 const additionalEmails = document.getElementById('additional-emails').value
                     .split(',')
                     .map(email => email.trim())
-                    .filter(email => email);
+                    .filter(email => email && email.includes('@'));
 
                 const eventData = {
                     userName: document.getElementById('user-name').value,
                     companyName: document.getElementById('company-name').value,
                     date: document.getElementById('event-date').value,
                     time: document.getElementById('event-time').value,
-                    meetingType: document.getElementById('meeting-type').value,
+                    meetingType: meetingTypeSelect.value,
                     meetingLink: meetingLink,
                     passcode: meetingPasscode,
                     primaryGuest: primaryEmail,
                     additionalGuests: additionalEmails,
                     guests: [primaryEmail, ...additionalEmails].filter(e => e)
                 };
+
                 eventData.googleCalendarLink = generateGoogleCalendarLink(eventData);
 
                 try {
-                    // CORRECTED FETCH BLOCK
                     const response = await fetch(WEB_APP_URL, {
                         method: 'POST',
-                        mode: 'cors', // Ensures cross-origin requests are handled correctly
-                        redirect: 'follow', // Follows the redirect from Google's servers
+                        mode: 'cors',
+                        redirect: 'follow',
                         body: JSON.stringify(eventData),
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        headers: { 
+                            'Content-Type': 'text/plain;charset=utf-8'
+                        },
                     });
 
-                    const resultText = await response.text();
-                    const result = JSON.parse(resultText);
-
-                    if (result.result === 'success') {
-                        bookingContainer.classList.add('hidden');
-                        thankYouContainer.classList.remove('hidden');
-                        bookingForm.reset();
-                    } else {
-                        throw new Error(result.error || 'An unknown error occurred.');
+                    if (!response.ok && response.status !== 0) {
+                        throw new Error(`Server error: ${response.status}`);
                     }
+                    
+                    bookingContainer.classList.add('hidden');
+                    thankYouContainer.classList.remove('hidden');
+                    bookingForm.reset();
+
                 } catch (error) {
-                    console.error('Error saving event:', error);
-                    alert(`Error: ${error.message}`);
+                    console.error('Booking error:', error);
+                    showError(error.message);
                 } finally {
-                    loaderOverlay.classList.add('hidden');
+                    loaderOverlay.style.display = 'none'; // Hide loader
+                    submitBtn.disabled = false;
                 }
             });
 
+            // Book another handler
             bookAnotherBtn.addEventListener('click', () => {
                 thankYouContainer.classList.add('hidden');
                 bookingContainer.classList.remove('hidden');
+                meetingTypeSelect.value = '';
+                meetingLink = '';
+                meetingPasscode = '';
+                errorContainer.innerHTML = '';
             });
 
+            // Generate Google Calendar link
             function generateGoogleCalendarLink(eventData) {
-                const { companyName, userName, date, time, guests, meetingLink } = eventData;
-                const title = `${userName} / ${companyName}`;
+                const { companyName, userName, date, time, guests, meetingLink, passcode } = eventData;
+                const title = `${userName} / ${companyName} - Research Meeting`;
                 const startTime = new Date(`${date}T${time}`);
                 const endTime = new Date(startTime.getTime() + 60 * 60 * 1000);
-                const toUTC = (d) => d.toISOString().replace(/-|:|\.\d+/g, '');
+                const toUTC = (d) => d.toISOString().replace(/[:.-]|Z/g, '');
                 
                 const gCalUrl = new URL('https://www.google.com/calendar/render');
                 gCalUrl.searchParams.append('action', 'TEMPLATE');
                 gCalUrl.searchParams.append('text', title);
                 gCalUrl.searchParams.append('dates', `${toUTC(startTime)}/${toUTC(endTime)}`);
-                let details = `Event with: ${title}\n`;
-                if(meetingLink) details += `Join Meeting: ${meetingLink}`;
+                
+                let details = `Research collaboration meeting with: ${userName} from ${companyName}\n\n`;
+                if (meetingLink) {
+                    details += `Join Meeting: ${meetingLink}\n`;
+                    if (passcode && passcode !== 'N/A') {
+                        details += `Passcode: ${passcode}`;
+                    }
+                }
+                
                 gCalUrl.searchParams.append('details', details);
-                if (guests && guests.length > 0) gCalUrl.searchParams.append('add', guests.join(','));
+                if (guests && guests.length > 0) {
+                    gCalUrl.searchParams.append('add', guests.join(','));
+                }
+                
                 return gCalUrl.toString();
             }
         });
