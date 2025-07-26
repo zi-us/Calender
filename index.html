@@ -244,17 +244,17 @@
                 const gCalUrl = new URL('https://www.google.com/calendar/render');
                 gCalUrl.searchParams.append('action', 'TEMPLATE');
                 gCalUrl.searchParams.append('text', title);
-                gCalUrl.searchParams.append('dates', `${toUTC(startTime)}/${toUTC(endTime)}`);
+                gCalUrl.search_params.append('dates', `${toUTC(startTime)}/${toUTC(endTime)}`);
                 let details = `Event with: ${title}\n`;
                 if(meetingLink) details += `Join Meeting: ${meetingLink}`;
-                gCalUrl.searchParams.append('details', details);
-                if (guests && guests.length > 0) gCalUrl.searchParams.append('add', guests.join(','));
+                gCalUrl.search_params.append('details', details);
+                if (guests && guests.length > 0) gCalUrl.search_params.append('add', guests.join(','));
                 return gCalUrl.toString();
             }
             
             function showNotification(message, bgColor = 'bg-green-500') {
                 notificationMessage.textContent = message;
-                notification.className = `fixed bottom-5 right-5 text-white py-3 px-5 rounded-lg shadow-xl transform translate-y-20 opacity-0 ${bgColor}`;
+                notification.className = `fixed bottom-5 right-5 text-white py-3 px_5 rounded-lg shadow-xl transform translate-y-20 opacity-0 ${bgColor}`;
                 setTimeout(() => {
                     notification.classList.remove('translate-y-20', 'opacity-0');
                     notification.classList.add('translate-y-0', 'opacity-100');
