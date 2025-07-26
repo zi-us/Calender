@@ -31,12 +31,12 @@
         <form id="booking-form">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
                 <div>
-                    <label for="company-name" class="block text-gray-700 text-sm font-bold mb-2">Company Name</label>
-                    <input type="text" id="company-name" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <label for="user-name" class="block text-gray-700 text-sm font-bold mb-2">Participant Name</label>
+                    <input type="text" id="user-name" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 </div>
                 <div>
-                    <label for="user-name" class="block text-gray-700 text-sm font-bold mb-2">User Name</label>
-                    <input type="text" id="user-name" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                    <label for="company-name" class="block text-gray-700 text-sm font-bold mb-2">Company Name</label>
+                    <input type="text" id="company-name" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                 </div>
                  <div>
                     <label for="event-date" class="block text-gray-700 text-sm font-bold mb-2">Date</label>
@@ -59,6 +59,7 @@
                 </select>
             </div>
 
+            <!-- This container is now permanently hidden, but its inputs will still be populated by JavaScript -->
             <div id="meeting-details-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 hidden">
                  <div>
                     <label for="meeting-link" class="block text-gray-700 text-sm font-bold mb-2">Meeting Link</label>
@@ -71,18 +72,20 @@
             </div>
 
             <div class="mb-6">
-                <label class="block text-gray-700 text-sm font-bold mb-2">Guest Emails</label>
-                <div class="space-y-2">
-                    <input type="email" id="guest-email-1" class="guest-email shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Guest 1 Email">
-                    <input type="email" id="guest-email-2" class="guest-email shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Guest 2 Email">
-                    <input type="email" id="guest-email-3" class="guest-email shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Guest 3 Email">
-                    <input type="email" id="guest-email-4" class="guest-email shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Guest 4 Email">
-                </div>
+                <label for="primary-guest-email" class="block text-gray-700 text-sm font-bold mb-2">Participant Email</label>
+                <input type="email" id="primary-guest-email" class="guest-email shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Participant's email address">
             </div>
 
             <div class="mb-8">
                 <label for="additional-emails" class="block text-gray-700 text-sm font-bold mb-2">Additional Guests (comma separated)</label>
-                <textarea id="additional-emails" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="guest5@example.com, guest6@example.com"></textarea>
+                <textarea id="additional-emails" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="guest2@example.com, guest3@example.com"></textarea>
+            </div>
+
+            <div class="mb-6">
+                <label class="flex items-start">
+                    <input type="checkbox" id="consent-checkbox" class="form-checkbox h-5 w-5 text-blue-600 mt-1" required>
+                    <span class="ml-2 text-gray-700 text-sm">I allow Borel Sigma to arrange meet ups on our behalf and store our emails for quality and preferences.</span>
+                </label>
             </div>
 
             <div class="flex items-center justify-center">
@@ -152,13 +155,11 @@
             // --- Event Listeners ---
             meetingTypeSelect.addEventListener('change', (e) => {
                 const type = e.target.value;
-                if (type === 'none') {
-                    meetingDetailsContainer.classList.add('hidden');
-                } else {
+                if (type !== 'none') {
                     const data = MEETING_DATA[type];
                     meetingLinkInput.value = data.link;
                     passcodeIput.value = data.passcode;
-                    meetingDetailsContainer.classList.remove('hidden');
+                    // The container for link and key remains hidden, but the values are set.
                 }
             });
 
@@ -168,13 +169,18 @@
 
                 // Collect all emails
                 let allGuests = [];
-                document.querySelectorAll('.guest-email').forEach(input => {
-                    if (input.value) allGuests.push(input.value.trim());
-                });
+                // Get the primary guest email
+                const primaryEmail = document.getElementById('primary-guest-email').value;
+                if (primaryEmail) {
+                    allGuests.push(primaryEmail.trim());
+                }
+                
+                // Get additional guest emails
                 const additionalEmails = document.getElementById('additional-emails').value
                     .split(',')
                     .map(email => email.trim())
                     .filter(email => email);
+                
                 allGuests = [...allGuests, ...additionalEmails];
 
                 // Prepare data for Google Script in the new format
@@ -194,16 +200,16 @@
                 try {
                     const response = await fetch(WEB_APP_URL, {
                         method: 'POST',
-                        mode: 'cors', // Corrected: Use CORS mode to allow reading the response
+                        mode: 'cors',
                         cache: 'no-cache',
                         headers: {
-                            'Content-Type': 'application/json', // Corrected: Send as JSON
+                            'Content-Type': 'application/json',
                         },
-                        redirect: 'follow', // Important for Google Scripts
+                        redirect: 'follow',
                         body: JSON.stringify(eventData)
                     });
                     
-                    const result = await response.json(); // Now we can properly read the response
+                    const result = await response.json();
 
                     if (result.result === 'success') {
                         bookingContainer.classList.add('hidden');
