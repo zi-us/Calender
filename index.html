@@ -177,36 +177,46 @@
                     .filter(email => email);
                 allGuests = [...allGuests, ...additionalEmails];
 
-                // Prepare data for Google Script
+                // Prepare data for Google Script in the new format
                 const eventData = {
-                    title: document.getElementById('company-name').value + ' / ' + document.getElementById('user-name').value,
+                    companyName: document.getElementById('company-name').value,
+                    userName: document.getElementById('user-name').value,
                     date: document.getElementById('event-date').value,
                     time: document.getElementById('event-time').value,
                     meetingType: document.getElementById('meeting-type').value,
                     meetingLink: meetingLinkInput.value,
-                    passcode: passcodeIput.value, // Passcode is now included
+                    passcode: passcodeIput.value,
                     guests: allGuests
                 };
                 eventData.googleCalendarLink = generateGoogleCalendarLink(eventData);
 
                 // Send data to Google Script
                 try {
-                    await fetch(WEB_APP_URL, {
+                    const response = await fetch(WEB_APP_URL, {
                         method: 'POST',
-                        mode: 'no-cors',
+                        mode: 'cors', // Corrected: Use CORS mode to allow reading the response
                         cache: 'no-cache',
-                        headers: { 'Content-Type': 'text/plain' },
+                        headers: {
+                            'Content-Type': 'application/json', // Corrected: Send as JSON
+                        },
+                        redirect: 'follow', // Important for Google Scripts
                         body: JSON.stringify(eventData)
                     });
                     
-                    bookingContainer.classList.add('hidden');
-                    thankYouContainer.classList.remove('hidden');
-                    bookingForm.reset();
-                    meetingDetailsContainer.classList.add('hidden');
+                    const result = await response.json(); // Now we can properly read the response
+
+                    if (result.result === 'success') {
+                        bookingContainer.classList.add('hidden');
+                        thankYouContainer.classList.remove('hidden');
+                        bookingForm.reset();
+                        meetingDetailsContainer.classList.add('hidden');
+                    } else {
+                        throw new Error(result.error || 'An unknown error occurred in the script.');
+                    }
 
                 } catch (error) {
                     console.error('Error saving event:', error);
-                    showNotification('Failed to save booking. Please try again.', 'bg-red-500');
+                    showNotification(`Error: ${error.message}`, 'bg-red-500');
                 } finally {
                     loaderOverlay.classList.add('hidden');
                 }
@@ -219,7 +229,8 @@
 
             // --- Helper Functions ---
             function generateGoogleCalendarLink(eventData) {
-                const { title, date, time, guests, meetingLink } = eventData;
+                const { companyName, userName, date, time, guests, meetingLink } = eventData;
+                const title = `${companyName} / ${userName}`;
                 const startTime = new Date(`${date}T${time}`);
                 const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // Assume 1 hour
                 const toUTC = (d) => d.toISOString().replace(/-|:|\.\d+/g, '');
