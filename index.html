@@ -159,7 +159,6 @@
                     const data = MEETING_DATA[type];
                     meetingLinkInput.value = data.link;
                     passcodeIput.value = data.passcode;
-                    // The container for link and key remains hidden, but the values are set.
                 }
             });
 
@@ -167,26 +166,20 @@
                 e.preventDefault();
                 loaderOverlay.classList.remove('hidden');
 
-                // Collect all emails
                 let allGuests = [];
-                // Get the primary guest email
                 const primaryEmail = document.getElementById('primary-guest-email').value;
                 if (primaryEmail) {
                     allGuests.push(primaryEmail.trim());
                 }
-                
-                // Get additional guest emails
                 const additionalEmails = document.getElementById('additional-emails').value
                     .split(',')
                     .map(email => email.trim())
                     .filter(email => email);
-                
                 allGuests = [...allGuests, ...additionalEmails];
 
-                // Prepare data for Google Script in the new format
                 const eventData = {
-                    companyName: document.getElementById('company-name').value,
                     userName: document.getElementById('user-name').value,
+                    companyName: document.getElementById('company-name').value,
                     date: document.getElementById('event-date').value,
                     time: document.getElementById('event-time').value,
                     meetingType: document.getElementById('meeting-type').value,
@@ -196,26 +189,24 @@
                 };
                 eventData.googleCalendarLink = generateGoogleCalendarLink(eventData);
 
-                // Send data to Google Script
                 try {
+                    // This is the corrected fetch request block
                     const response = await fetch(WEB_APP_URL, {
                         method: 'POST',
-                        mode: 'cors',
-                        cache: 'no-cache',
+                        body: JSON.stringify(eventData),
                         headers: {
-                            'Content-Type': 'application/json',
+                            'Content-Type': 'text/plain;charset=utf-8', // Google Scripts often work better with text/plain
                         },
-                        redirect: 'follow',
-                        body: JSON.stringify(eventData)
                     });
-                    
-                    const result = await response.json();
+
+                    const resultText = await response.text();
+                    const result = JSON.parse(resultText);
+
 
                     if (result.result === 'success') {
                         bookingContainer.classList.add('hidden');
                         thankYouContainer.classList.remove('hidden');
                         bookingForm.reset();
-                        meetingDetailsContainer.classList.add('hidden');
                     } else {
                         throw new Error(result.error || 'An unknown error occurred in the script.');
                     }
@@ -236,25 +227,25 @@
             // --- Helper Functions ---
             function generateGoogleCalendarLink(eventData) {
                 const { companyName, userName, date, time, guests, meetingLink } = eventData;
-                const title = `${companyName} / ${userName}`;
+                const title = `${userName} / ${companyName}`;
                 const startTime = new Date(`${date}T${time}`);
-                const endTime = new Date(startTime.getTime() + 60 * 60 * 1000); // Assume 1 hour
+                const endTime = new Date(startTime.getTime() + 60 * 60 * 1000);
                 const toUTC = (d) => d.toISOString().replace(/-|:|\.\d+/g, '');
                 
                 const gCalUrl = new URL('https://www.google.com/calendar/render');
                 gCalUrl.searchParams.append('action', 'TEMPLATE');
                 gCalUrl.searchParams.append('text', title);
-                gCalUrl.search_params.append('dates', `${toUTC(startTime)}/${toUTC(endTime)}`);
+                gCalUrl.searchParams.append('dates', `${toUTC(startTime)}/${toUTC(endTime)}`);
                 let details = `Event with: ${title}\n`;
                 if(meetingLink) details += `Join Meeting: ${meetingLink}`;
-                gCalUrl.search_params.append('details', details);
-                if (guests && guests.length > 0) gCalUrl.search_params.append('add', guests.join(','));
+                gCalUrl.searchParams.append('details', details);
+                if (guests && guests.length > 0) gCalUrl.searchParams.append('add', guests.join(','));
                 return gCalUrl.toString();
             }
             
             function showNotification(message, bgColor = 'bg-green-500') {
                 notificationMessage.textContent = message;
-                notification.className = `fixed bottom-5 right-5 text-white py-3 px_5 rounded-lg shadow-xl transform translate-y-20 opacity-0 ${bgColor}`;
+                notification.className = `fixed bottom-5 right-5 text-white py-3 px-5 rounded-lg shadow-xl transform translate-y-20 opacity-0 ${bgColor}`;
                 setTimeout(() => {
                     notification.classList.remove('translate-y-20', 'opacity-0');
                     notification.classList.add('translate-y-0', 'opacity-100');
