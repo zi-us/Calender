@@ -3,14 +3,190 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <title>Borel Sigma | Booking Dashboard</title>
+    
     <style>
-        body { font-family: 'Inter', sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500&display=swap');
+        
+        :root {
+            --primary: #000000;
+            --secondary: #1a1a1a;
+            --accent: #0066ff;
+            --gray-100: #f8f9fa;
+            --gray-200: #e9ecef;
+            --gray-300: #dee2e6;
+            --gray-600: #6c757d;
+            --gray-700: #495057;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            font-size: 62.5%;
+        }
+
+        body {
+            font-family: 'Calibri Light', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            font-weight: 300;
+            font-size: 1.4rem;
+            line-height: 1.6;
+            color: var(--primary);
+            background: var(--gray-100);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .main-container {
+            width: 100%;
+            max-width: 700px;
+            background: #ffffff;
+            border: 1px solid var(--gray-200);
+            border-radius: 0.4rem;
+            padding: 4rem;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            font-size: 3.2rem;
+            font-weight: 200;
+            margin-bottom: 3rem;
+            text-align: center;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 2rem;
+        }
+
+        label {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 400;
+            color: var(--gray-700);
+            margin-bottom: 0.8rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 1rem;
+            font-size: 1.3rem;
+            font-family: 'Inter', sans-serif;
+            border: 1px solid var(--gray-300);
+            border-radius: 0.2rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.15);
+        }
+
+        textarea.form-input {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .consent-group {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 3rem;
+        }
+
+        .consent-group input {
+            margin-top: 0.5rem;
+            height: 1.6rem;
+            width: 1.6rem;
+        }
+
+        .consent-group label {
+            font-size: 1.2rem;
+            color: var(--gray-600);
+            margin-left: 1rem;
+            font-weight: 300;
+        }
+
+        .button-container {
+            text-align: center;
+        }
+
+        .btn {
+            padding: 1.2rem 3rem;
+            font-size: 1.3rem;
+            font-weight: 400;
+            border: 1px solid var(--primary);
+            background: var(--primary);
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            letter-spacing: 0.02em;
+            border-radius: 0.2rem;
+            width: 100%;
+            max-width: 300px;
+            justify-content: center;
+        }
+
+        .btn:hover {
+            background: var(--secondary);
+            border-color: var(--secondary);
+        }
+
+        #thank-you-container {
+            text-align: center;
+        }
+        
+        #thank-you-container svg {
+            margin: 0 auto;
+            height: 6rem;
+            width: 6rem;
+            color: #10b981;
+        }
+
+        #thank-you-container h1 {
+            margin-top: 2rem;
+        }
+
+        #thank-you-container p {
+            font-size: 1.3rem;
+            color: var(--gray-600);
+            margin-bottom: 3rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+
+        #loader-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.8);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         #loader {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
+            border: 5px solid var(--gray-200);
+            border-top: 5px solid var(--accent);
             border-radius: 50%;
             width: 50px;
             height: 50px;
@@ -20,37 +196,49 @@
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        #notification { transition: transform 0.5s, opacity 0.5s; }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+            .main-container {
+                padding: 2rem;
+            }
+            .form-grid {
+                grid-template-columns: 1fr;
+                gap: 0;
+            }
+        }
     </style>
 </head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
+<body>
 
-    <div id="booking-container" class="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-8">
-        <h1 class="text-3xl font-bold text-gray-800 mb-6 text-center">Create a New Booking</h1>
+    <div id="booking-container" class="main-container">
+        <h1>Create a New Booking</h1>
         
         <form id="booking-form">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                    <label for="user-name" class="block text-gray-700 text-sm font-bold mb-2">Participant Name</label>
-                    <input type="text" id="user-name" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label for="user-name">Participant Name</label>
+                    <input type="text" id="user-name" class="form-input" required>
                 </div>
-                <div>
-                    <label for="company-name" class="block text-gray-700 text-sm font-bold mb-2">Company Name</label>
-                    <input type="text" id="company-name" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <div class="form-group">
+                    <label for="company-name">Company Name</label>
+                    <input type="text" id="company-name" class="form-input" required>
                 </div>
-                 <div>
-                    <label for="event-date" class="block text-gray-700 text-sm font-bold mb-2">Date</label>
-                    <input type="date" id="event-date" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                 <div class="form-group">
+                    <label for="event-date">Date</label>
+                    <input type="date" id="event-date" class="form-input" required>
                 </div>
-                <div>
-                    <label for="event-time" class="block text-gray-700 text-sm font-bold mb-2">Time (Greenwich Mean Time)</label>
-                    <input type="time" id="event-time" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                <div class="form-group">
+                    <label for="event-time">Time (Greenwich Mean Time)</label>
+                    <input type="time" id="event-time" class="form-input" required>
                 </div>
             </div>
 
-            <div class="mb-6">
-                <label for="meeting-type" class="block text-gray-700 text-sm font-bold mb-2">Meeting Type</label>
-                <select id="meeting-type" class="shadow-sm border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <div class="form-group">
+                <label for="meeting-type">Meeting Type</label>
+                <select id="meeting-type" class="form-input">
                     <option value="none" selected>Select a meeting type...</option>
                     <option value="google-meet">Google Meet</option>
                     <option value="webex">Webex</option>
@@ -59,106 +247,71 @@
                 </select>
             </div>
 
-            <!-- This container is now permanently hidden, but its inputs will still be populated by JavaScript -->
-            <div id="meeting-details-container" class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6 hidden">
-                 <div>
-                    <label for="meeting-link" class="block text-gray-700 text-sm font-bold mb-2">Meeting Link</label>
-                    <input type="text" id="meeting-link" class="shadow-sm bg-gray-100 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none" readonly>
-                </div>
-                <div>
-                    <label for="passcode" class="block text-gray-700 text-sm font-bold mb-2">Meeting Key</label>
-                    <input type="text" id="passcode" class="shadow-sm bg-gray-100 appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none" readonly>
-                </div>
+            <div class="form-group">
+                <label for="primary-guest-email">Participant Email</label>
+                <input type="email" id="primary-guest-email" class="form-input" placeholder="Participant's email address">
             </div>
 
-            <div class="mb-6">
-                <label for="primary-guest-email" class="block text-gray-700 text-sm font-bold mb-2">Participant Email</label>
-                <input type="email" id="primary-guest-email" class="guest-email shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Participant's email address">
+            <div class="form-group">
+                <label for="additional-emails">Additional Guests (comma separated)</label>
+                <textarea id="additional-emails" class="form-input" placeholder="guest2@example.com, guest3@example.com"></textarea>
             </div>
 
-            <div class="mb-8">
-                <label for="additional-emails" class="block text-gray-700 text-sm font-bold mb-2">Additional Guests (comma separated)</label>
-                <textarea id="additional-emails" class="shadow-sm appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="guest2@example.com, guest3@example.com"></textarea>
+            <div class="consent-group">
+                <input type="checkbox" id="consent-checkbox" required>
+                <label for="consent-checkbox">I allow Borel Sigma to arrange meet ups on our behalf and store our emails for quality and preferences.</label>
             </div>
 
-            <div class="mb-6">
-                <label class="flex items-start">
-                    <input type="checkbox" id="consent-checkbox" class="form-checkbox h-5 w-5 text-blue-600 mt-1" required>
-                    <span class="ml-2 text-gray-700 text-sm">I allow Borel Sigma to arrange meet ups on our behalf and store our emails for quality and preferences.</span>
-                </label>
-            </div>
-
-            <div class="flex items-center justify-center">
-                <button type="submit" class="w-full md:w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out shadow-lg hover:shadow-xl">
-                    Save Event & Send Invites
-                </button>
+            <div class="button-container">
+                <button type="submit" class="btn">Save Event & Send Invites</button>
             </div>
         </form>
     </div>
 
-    <div id="thank-you-container" class="w-full max-w-2xl bg-white rounded-2xl shadow-lg p-8 text-center hidden">
-        <svg class="mx-auto h-16 w-16 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+    <div id="thank-you-container" class="main-container hidden">
+        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
-        <h1 class="text-3xl font-bold text-gray-800 mt-4">Thank You!</h1>
-        <p class="text-gray-600 mt-2">Your booking has been confirmed. All guests have been notified via email.</p>
-        <button id="book-another" class="mt-8 w-full md:w-1/2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition duration-300 ease-in-out shadow-lg hover:shadow-xl">
-            Book Another Meeting
-        </button>
+        <h1>Thank You!</h1>
+        <p>Your booking has been confirmed. All guests have been notified via email.</p>
+        <div class="button-container">
+            <button id="book-another" class="btn">Book Another Meeting</button>
+        </div>
     </div>
 
-
-    <!-- Notification and Loader -->
-    <div id="notification" class="fixed bottom-5 right-5 bg-green-500 text-white py-3 px-5 rounded-lg shadow-xl transform translate-y-20 opacity-0">
-        <p id="notification-message"></p>
-    </div>
-    <div id="loader-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div id="loader-overlay" class="hidden">
         <div id="loader"></div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // --- CONSTANTS ---
             const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzJpSfz6OzB24tMJvSfzdGxpMpTyjT-8qztrHuO2jOZi3TQvaMfG8M6HPYAAbnSTRSh/exec';
             const MEETING_DATA = {
-                'google-meet': {
-                    link: 'https://meet.google.com/dga-frbk-xob',
-                    passcode: 'N/A'
-                },
-                'webex': {
-                    link: 'https://meet1427.webex.com/meet/pr23614102288',
-                    passcode: '23614102288'
-                },
-                'zoom': {
-                    link: 'https://us06web.zoom.us/j/your-meeting-id', // Replace with your actual Zoom ID
-                    passcode: 'Raghunath'
-                },
-                'teams': {
-                    link: 'https://teams.microsoft.com/l/meetup-join/...', // Placeholder
-                    passcode: 'N/A'
-                }
+                'google-meet': { link: 'https://meet.google.com/dga-frbk-xob', passcode: 'N/A' },
+                'webex': { link: 'https://meet1427.webex.com/meet/pr23614102288', passcode: '23614102288' },
+                'zoom': { link: 'https://us06web.zoom.us/j/your-meeting-id', passcode: 'Raghunath' },
+                'teams': { link: 'https://teams.microsoft.com/l/meetup-join/...', passcode: 'N/A' }
             };
 
-            // --- DOM Element Selection ---
             const bookingContainer = document.getElementById('booking-container');
             const thankYouContainer = document.getElementById('thank-you-container');
             const bookingForm = document.getElementById('booking-form');
             const meetingTypeSelect = document.getElementById('meeting-type');
-            const meetingDetailsContainer = document.getElementById('meeting-details-container');
-            const meetingLinkInput = document.getElementById('meeting-link');
-            const passcodeIput = document.getElementById('passcode');
-            const notification = document.getElementById('notification');
-            const notificationMessage = document.getElementById('notification-message');
             const loaderOverlay = document.getElementById('loader-overlay');
             const bookAnotherBtn = document.getElementById('book-another');
 
-            // --- Event Listeners ---
+            let meetingLink = '';
+            let meetingPasscode = '';
+
             meetingTypeSelect.addEventListener('change', (e) => {
                 const type = e.target.value;
                 if (type !== 'none') {
                     const data = MEETING_DATA[type];
-                    meetingLinkInput.value = data.link;
-                    passcodeIput.value = data.passcode;
+                    meetingLink = data.link;
+                    meetingPasscode = data.passcode;
+                } else {
+                    meetingLink = '';
+                    meetingPasscode = '';
                 }
             });
 
@@ -172,15 +325,14 @@
                     .map(email => email.trim())
                     .filter(email => email);
 
-                // Prepare data for Google Script
                 const eventData = {
                     userName: document.getElementById('user-name').value,
                     companyName: document.getElementById('company-name').value,
                     date: document.getElementById('event-date').value,
                     time: document.getElementById('event-time').value,
                     meetingType: document.getElementById('meeting-type').value,
-                    meetingLink: meetingLinkInput.value,
-                    passcode: passcodeIput.value,
+                    meetingLink: meetingLink,
+                    passcode: meetingPasscode,
                     primaryGuest: primaryEmail,
                     additionalGuests: additionalEmails,
                     guests: [primaryEmail, ...additionalEmails].filter(e => e)
@@ -188,12 +340,13 @@
                 eventData.googleCalendarLink = generateGoogleCalendarLink(eventData);
 
                 try {
+                    // CORRECTED FETCH BLOCK
                     const response = await fetch(WEB_APP_URL, {
                         method: 'POST',
+                        mode: 'cors', // Ensures cross-origin requests are handled correctly
+                        redirect: 'follow', // Follows the redirect from Google's servers
                         body: JSON.stringify(eventData),
-                        headers: {
-                            'Content-Type': 'text/plain;charset=utf-8',
-                        },
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
                     });
 
                     const resultText = await response.text();
@@ -204,12 +357,11 @@
                         thankYouContainer.classList.remove('hidden');
                         bookingForm.reset();
                     } else {
-                        throw new Error(result.error || 'An unknown error occurred in the script.');
+                        throw new Error(result.error || 'An unknown error occurred.');
                     }
-
                 } catch (error) {
                     console.error('Error saving event:', error);
-                    showNotification(`Error: ${error.message}`, 'bg-red-500');
+                    alert(`Error: ${error.message}`);
                 } finally {
                     loaderOverlay.classList.add('hidden');
                 }
@@ -220,7 +372,6 @@
                 bookingContainer.classList.remove('hidden');
             });
 
-            // --- Helper Functions ---
             function generateGoogleCalendarLink(eventData) {
                 const { companyName, userName, date, time, guests, meetingLink } = eventData;
                 const title = `${userName} / ${companyName}`;
@@ -237,19 +388,6 @@
                 gCalUrl.searchParams.append('details', details);
                 if (guests && guests.length > 0) gCalUrl.searchParams.append('add', guests.join(','));
                 return gCalUrl.toString();
-            }
-            
-            function showNotification(message, bgColor = 'bg-green-500') {
-                notificationMessage.textContent = message;
-                notification.className = `fixed bottom-5 right-5 text-white py-3 px-5 rounded-lg shadow-xl transform translate-y-20 opacity-0 ${bgColor}`;
-                setTimeout(() => {
-                    notification.classList.remove('translate-y-20', 'opacity-0');
-                    notification.classList.add('translate-y-0', 'opacity-100');
-                }, 10);
-                setTimeout(() => {
-                    notification.classList.remove('translate-y-0', 'opacity-100');
-                    notification.classList.add('translate-y-20', 'opacity-0');
-                }, 4000);
             }
         });
     </script>
